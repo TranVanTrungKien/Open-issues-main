@@ -1,9 +1,11 @@
 # Danh tính và phân quyền
 
 **Domain:** `IAM` · **Bắt đầu:** P0 · **Số use case:** 6
-**Trạng thái:** Baseline đề xuất v0.1 — chưa phải yêu cầu đã được khách hàng phê duyệt.
+**Trạng thái:** Baseline đề xuất v0.1; ranh giới quyền giữa các site tại OI-02 và giải pháp danh tính tại OI-03 đã được chốt.
 
 Quản lý danh tính, vai trò, nhóm và quyền theo phạm vi. Không quyết định nội dung được duyệt hay được xuất bản.
+**Quyết định OI-02:** Cô lập quyền theo site là mặc định. Quyền sử dụng nội dung/tài nguyên được chia sẻ không tự cấp quyền sửa, duyệt, xuất bản hoặc quản trị đối tượng nguồn.
+**Quyết định OI-03:** SSO doanh nghiệp + MFA + RBAC theo phạm vi + đồng bộ nhóm + quản lý phiên và thu hồi quyền + tài khoản khẩn cấp được kiểm soát. Hoàn thiện cấu hình và kiểm chứng tại P0 theo [OI-03](../open-issues.md#oi-03) và BR-COM-19; chưa xác nhận đã triển khai.
 
 [Mục lục](../README.md) · [Thứ tự triển khai](../implementation-roadmap.md) · [Quy tắc chung](../common-rules.md) · [Trạng thái](../state-model.md) · [Điểm chưa chốt](../open-issues.md)
 
@@ -27,12 +29,12 @@ AC liên quan năng lực triển khai sau được nghiệm thu khi năng lực
 **Mục tiêu:** Người dùng mở được phiên CMS với đúng quyền hiện hành.
 **Kích hoạt:** Người dùng yêu cầu thực hiện “đăng nhập bằng tài khoản doanh nghiệp”.
 **Tiền điều kiện:** Tài khoản đang hoạt động. Nhà cung cấp danh tính đã được cấu hình.
-**Thông tin đầu vào:** Danh tính doanh nghiệp; phương thức xác thực được doanh nghiệp cho phép.
+**Thông tin đầu vào:** Danh tính doanh nghiệp; xác thực SSO và bằng chứng đáp ứng MFA theo chính sách được cấu hình.
 
 **Luồng chính**
 
 1. Chọn đăng nhập doanh nghiệp.
-2. Hoàn tất xác thực tại hệ thống danh tính.
+2. Hoàn tất xác thực SSO và đáp ứng MFA tại hệ thống danh tính doanh nghiệp.
 3. Xem danh tính và các phạm vi được cấp.
 4. Mở phạm vi làm việc được phép.
 
@@ -40,8 +42,10 @@ AC liên quan năng lực triển khai sau được nghiệm thu khi năng lực
 
 - E01: Tài khoản bị khóa: không mở phiên.
 - E02: Xác thực thành công nhưng chưa có quyền CMS: hiển thị cách liên hệ quản trị, không tự cấp vai trò.
+- E03: Chưa đáp ứng MFA: không mở phiên CMS sử dụng được.
+- E04: SSO không khả dụng: không mở phiên thông thường; người được chỉ định dùng quy trình tài khoản khẩn cấp theo BR-COM-19 để khôi phục quản trị, có lý do, giới hạn thời gian, cảnh báo, audit và rà soát sau sử dụng.
 
-**BR-IAM-01:** Danh tính hợp lệ không tự tạo quyền truy cập. MFA và thời hạn phiên theo chính sách đã chốt.
+**BR-IAM-01:** SSO doanh nghiệp và MFA là yêu cầu đã chốt tại OI-03; danh tính hợp lệ không tự tạo quyền truy cập. Thời hạn phiên và cấu hình xác thực phải được xác nhận trước gate P0. Tài khoản khẩn cấp được bảo vệ riêng, truy vết người sử dụng thực tế và không tự bỏ qua kiểm soát nội dung theo BR-COM-19.
 **Kết quả thành công:** Người dùng mở được phiên CMS với đúng quyền hiện hành.
 **Bảo đảm khi thất bại:** Không ghi nhận hoàn tất khi chưa đạt kết quả; giữ dữ liệu đã xác nhận trước đó. Tác vụ nhiều bước phải chỉ rõ phần đã thay đổi và phần chưa thực hiện.
 
@@ -73,7 +77,7 @@ AC liên quan năng lực triển khai sau được nghiệm thu khi năng lực
 - E01: Hủy xác nhận: tiếp tục phiên khi phiên còn hiệu lực.
 - E02: Phiên đã hết hạn: vẫn hiển thị trạng thái đã đăng xuất, không báo thao tác thất bại.
 
-**BR-IAM-02:** Đăng xuất CMS không mặc định đăng xuất mọi ứng dụng SSO. Dữ liệu nhạy cảm đã mở không được tiếp tục lấy mới bằng phiên cũ.
+**BR-IAM-02:** Phiên CMS có thời hạn và hỗ trợ vô hiệu hóa. Phiên hết hạn, đã đăng xuất hoặc bị vô hiệu hóa không được tiếp tục lấy dữ liệu hay thực hiện hành động. Đăng xuất CMS không mặc định đăng xuất mọi ứng dụng SSO; không giữ quyền cũ chỉ vì phiên đang mở.
 **Kết quả thành công:** Phiên CMS cũ không còn được sử dụng.
 **Bảo đảm khi thất bại:** Không ghi nhận hoàn tất khi chưa đạt kết quả; giữ dữ liệu đã xác nhận trước đó. Tác vụ nhiều bước phải chỉ rõ phần đã thay đổi và phần chưa thực hiện.
 
@@ -93,12 +97,12 @@ AC liên quan năng lực triển khai sau được nghiệm thu khi năng lực
 **Mục tiêu:** Có hồ sơ người dùng thuộc đúng đơn vị, truy vết được người tiếp nhận.
 **Kích hoạt:** Người dùng yêu cầu thực hiện “tiếp nhận người dùng vào cms”.
 **Tiền điều kiện:** Có quyền quản lý người dùng trong tổ chức.
-**Thông tin đầu vào:** Danh tính; đơn vị; nhóm; ngày hiệu lực; người phụ trách.
+**Thông tin đầu vào:** Danh tính; đơn vị; nhóm từ nguồn danh tính doanh nghiệp được chỉ định; ngày hiệu lực; người phụ trách; ánh xạ nhóm–vai trò–phạm vi được quản lý.
 
 **Luồng chính**
 
 1. Tìm danh tính trong nguồn doanh nghiệp hoặc tạo lời mời theo chính sách.
-2. Chọn đơn vị và nhóm.
+2. Đối chiếu đơn vị và nhóm đồng bộ từ nguồn doanh nghiệp; kiểm tra ánh xạ sang vai trò/phạm vi CMS được quản lý.
 3. Kiểm tra trùng danh tính và phạm vi quản lý.
 4. Xác nhận tiếp nhận và xem trạng thái quyền ban đầu.
 
@@ -106,8 +110,9 @@ AC liên quan năng lực triển khai sau được nghiệm thu khi năng lực
 
 - E01: Danh tính đã tồn tại: mở hồ sơ hiện có, không tạo bản sao.
 - E02: Đơn vị ngoài phạm vi: từ chối tiếp nhận vào đơn vị đó.
+- E03: Đồng bộ nhóm lỗi hoặc chưa có ánh xạ: hiển thị trạng thái cần xử lý, không tự cấp thêm quyền hoặc coi việc đồng bộ đã hoàn tất.
 
-**BR-IAM-03:** Không dùng tên hiển thị làm khóa danh tính. Tài khoản mới chưa có quyền nội dung cho đến khi được cấp quyền.
+**BR-IAM-03:** Không dùng tên hiển thị làm khóa danh tính. Thành viên nhóm được đồng bộ từ nguồn doanh nghiệp được chỉ định; quyền chỉ phát sinh qua cấp quyền rõ ràng hoặc ánh xạ nhóm–vai trò–phạm vi đã được quản lý. Thay đổi nhóm phải tính lại quyền hiệu lực và ghi audit; không yêu cầu đăng nhập lại mới thu hồi quyền cũ. Lỗi đồng bộ không được tự mở rộng quyền.
 **Kết quả thành công:** Có hồ sơ người dùng thuộc đúng đơn vị, truy vết được người tiếp nhận.
 **Bảo đảm khi thất bại:** Không ghi nhận hoàn tất khi chưa đạt kết quả; giữ dữ liệu đã xác nhận trước đó. Tác vụ nhiều bước phải chỉ rõ phần đã thay đổi và phần chưa thực hiện.
 
@@ -123,16 +128,16 @@ AC liên quan năng lực triển khai sau được nghiệm thu khi năng lực
 
 **Thiết lập và cấp quyền theo phạm vi**
 
-**Triển khai:** P0. **Actor:** Quản trị phân quyền.
+**Triển khai:** P0. **Actor:** Quản trị phân quyền hoặc người được cấp quyền quản lý chia sẻ.
 **Mục tiêu:** Người được cấp chỉ thực hiện được hành động trong phạm vi cho phép.
 **Kích hoạt:** Người dùng yêu cầu thực hiện “thiết lập và cấp quyền theo phạm vi”.
-**Tiền điều kiện:** Người dùng hoặc nhóm tồn tại. Site và phạm vi cần cấp đã được khai báo.
-**Thông tin đầu vào:** Vai trò; hành động; đơn vị; site; loại nội dung; ngôn ngữ; thời hạn.
+**Tiền điều kiện:** Người dùng/nhóm cần cấp quyền hoặc nội dung/tài nguyên cần chia sẻ tồn tại. Site và phạm vi nguồn, đích đã được khai báo.
+**Thông tin đầu vào:** Người dùng/nhóm hoặc đối tượng chia sẻ; vai trò; hành động; đơn vị; site nguồn; site đích; loại nội dung; ngôn ngữ; thời hạn.
 
 **Luồng chính**
 
-1. Chọn người dùng hoặc nhóm.
-2. Chọn vai trò mẫu hoặc cấu hình vai trò được phép quản trị.
+1. Chọn người dùng/nhóm cần cấp quyền hoặc đối tượng cùng site đích cần chia sẻ.
+2. Chọn vai trò mẫu hoặc hành động sử dụng được phép.
 3. Giới hạn phạm vi và thời hạn.
 4. Xem quyền hiệu lực và xác nhận.
 
@@ -141,13 +146,13 @@ AC liên quan năng lực triển khai sau được nghiệm thu khi năng lực
 - E01: Không đủ quyền cấp một hành động: chặn cấp quyền đó.
 - E02: Thay đổi làm mất quản trị viên cuối cùng: chặn hoặc yêu cầu phương án thay thế.
 
-**BR-IAM-04:** Nhóm và đơn vị thuộc IAM; cấu hình workspace không tự cấp quyền. Quyền soạn, duyệt và xuất bản tách biệt. Không tự duyệt phiên bản do mình tạo hoặc sửa.
+**BR-IAM-04:** Áp dụng RBAC: vai trò xác định hành động, giới hạn theo đơn vị/nhóm, site, loại nội dung và locale. Nhóm và đơn vị thuộc IAM; cấu hình workspace không tự cấp quyền. Ánh xạ nhóm đồng bộ sang vai trò/phạm vi phải được quản lý, ghi audit và tính lại quyền khi thay đổi. Quyền soạn, duyệt và xuất bản tách biệt. Quyền chia sẻ phải nêu site nguồn, site đích và hành động được phép; quyền dùng ở site đích không suy rộng thành quyền quản trị đối tượng nguồn. Không tự duyệt phiên bản do mình tạo hoặc sửa.
 **Kết quả thành công:** Người được cấp chỉ thực hiện được hành động trong phạm vi cho phép.
 **Bảo đảm khi thất bại:** Không ghi nhận hoàn tất khi chưa đạt kết quả; giữ dữ liệu đã xác nhận trước đó. Tác vụ nhiều bước phải chỉ rõ phần đã thay đổi và phần chưa thực hiện.
 
 **Acceptance Criteria**
 
-- **AC-IAM-04-01/v1:** Given biên tập viên chỉ có site A; When mở hoặc sửa bài site B; Then bị từ chối.
+- **AC-IAM-04-01/v1:** Given biên tập viên site A chỉ được chia sẻ quyền sử dụng bài từ site B; When sửa bài nguồn ở site B; Then bị từ chối.
 - **AC-IAM-04-02/v1:** Given chỉ có quyền duyệt; When xuất bản; Then bị từ chối.
 - **AC-IAM-04-03/v1:** Given quyền đã hết hạn; When thực hiện hành động; Then quyền cũ không còn hiệu lực.
 
@@ -175,7 +180,7 @@ AC liên quan năng lực triển khai sau được nghiệm thu khi năng lực
 - E01: Người bị đình chỉ là chủ sở hữu duy nhất: chuyển việc chưa xử lý cho quản trị, không trì hoãn đình chỉ.
 - E02: Cố đình chỉ quản trị viên cuối cùng: yêu cầu phương án khôi phục quản trị.
 
-**BR-IAM-05:** Thu hồi có hiệu lực khi kiểm tra hành động tiếp theo. Lịch cá nhân chưa chạy bị tạm dừng để tái ủy quyền; nội dung đã xuất bản không tự bị gỡ.
+**BR-IAM-05:** Thu hồi có hiệu lực khi kiểm tra hành động tiếp theo, kể cả với phiên đang mở và quyền bị mất do thay đổi nhóm/ánh xạ. Đình chỉ tài khoản phải vô hiệu hóa các phiên CMS liên quan và ghi audit, không đợi bàn giao. Lịch cá nhân chưa chạy bị tạm dừng để tái ủy quyền; nội dung đã xuất bản không tự bị gỡ.
 **Kết quả thành công:** Quyền bị thu hồi không dùng được; dấu vết và trách nhiệm lịch sử vẫn còn.
 **Bảo đảm khi thất bại:** Không ghi nhận hoàn tất khi chưa đạt kết quả; giữ dữ liệu đã xác nhận trước đó. Tác vụ nhiều bước phải chỉ rõ phần đã thay đổi và phần chưa thực hiện.
 

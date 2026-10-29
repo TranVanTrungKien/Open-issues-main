@@ -1,9 +1,10 @@
 # Biên tập nội dung
 
 **Domain:** `CNT` · **Bắt đầu:** P1 · **Số use case:** 6
-**Trạng thái:** Baseline đề xuất v0.1 — chưa phải yêu cầu đã được khách hàng phê duyệt.
+**Trạng thái:** Baseline đề xuất v0.1; riêng quyết định chia sẻ nội dung chéo site tại OI-02 đã được chốt.
 
 Quản lý nội dung và vòng đời biên tập. Không phê duyệt hoặc công khai nội dung bằng thao tác lưu.
+**Quyết định OI-02:** Nội dung được cô lập theo site mặc định. Site đích chỉ được tham chiếu nội dung từ site nguồn khi có cấp quyền chia sẻ rõ ràng; quyền sử dụng không tự cấp quyền sửa nguồn.
 
 [Mục lục](../README.md) · [Thứ tự triển khai](../implementation-roadmap.md) · [Quy tắc chung](../common-rules.md) · [Trạng thái](../state-model.md) · [Điểm chưa chốt](../open-issues.md)
 
@@ -41,14 +42,14 @@ AC liên quan năng lực triển khai sau được nghiệm thu khi năng lực
 - E01: Dữ liệu thiếu trường chỉ bắt buộc khi duyệt: cho lưu nháp có cảnh báo.
 - E02: Giá trị sai kiểu, tham chiếu ngoài quyền hoặc mô hình đã ngừng dùng: chặn lưu phần không hợp lệ.
 
-**BR-CNT-01:** Bản nháp không có phê duyệt, lịch hay trạng thái công khai. Chủ sở hữu và locale phải được xác định.
+**BR-CNT-01:** Bản nháp không có phê duyệt, lịch hay trạng thái công khai. Chủ sở hữu và locale phải được xác định. Tham chiếu chéo site chỉ hợp lệ khi site đích có quyền sử dụng nội dung/tài nguyên được chia sẻ còn hiệu lực.
 **Kết quả thành công:** Có nội dung nháp có thể mở lại và tiếp tục biên tập.
 **Bảo đảm khi thất bại:** Không ghi nhận hoàn tất khi chưa đạt kết quả; giữ dữ liệu đã xác nhận trước đó. Tác vụ nhiều bước phải chỉ rõ phần đã thay đổi và phần chưa thực hiện.
 
 **Acceptance Criteria**
 
 - **AC-CNT-01-01/v1:** Given dữ liệu hợp lệ; When lưu; Then có nội dung và phiên bản đầu, chưa công khai.
-- **AC-CNT-01-02/v1:** Given liên kết tới đối tượng ngoài quyền; When lưu; Then bị từ chối.
+- **AC-CNT-01-02/v1:** Given liên kết tới đối tượng ở site khác không được chia sẻ cho site đích; When lưu; Then bị từ chối.
 - **AC-CNT-01-03/v1:** Given gửi lại cùng yêu cầu lưu do mất phản hồi; When xử lý; Then không tạo hai nội dung cho cùng yêu cầu.
 
 **Use case liên quan / phụ thuộc:** [UC-IAM-04](01-identity-access.md#uc-iam-04), [UC-MDL-01](06-content-model.md#uc-mdl-01), [UC-LOC-01](05-localization.md#uc-loc-01), [UC-AST-01](08-assets.md#uc-ast-01), [UC-TAX-01](07-taxonomy.md#uc-tax-01).

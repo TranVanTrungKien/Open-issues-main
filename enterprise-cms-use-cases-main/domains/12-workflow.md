@@ -1,9 +1,10 @@
 # Phê duyệt nội dung
 
 **Domain:** `WF` · **Bắt đầu:** P2 · **Số use case:** 7
-**Trạng thái:** Baseline đề xuất v0.1 — chưa phải yêu cầu đã được khách hàng phê duyệt.
+**Trạng thái:** Baseline đề xuất v0.1; riêng việc kiểm tra phụ thuộc chia sẻ chéo site tại OI-02 đã được chốt.
 
 Quản lý quyết định phê duyệt theo đúng phiên bản và phạm vi. Phê duyệt không đồng nghĩa xuất bản.
+**Quyết định OI-02:** Nội dung/tài nguyên chéo site trong một phiên bản chỉ hợp lệ khi quyền chia sẻ cho phạm vi dự kiến phát hành còn hiệu lực; quyền này được kiểm tra lại khi phát hành.
 
 [Mục lục](../README.md) · [Thứ tự triển khai](../implementation-roadmap.md) · [Quy tắc chung](../common-rules.md) · [Trạng thái](../state-model.md) · [Điểm chưa chốt](../open-issues.md)
 
@@ -73,10 +74,10 @@ AC liên quan năng lực triển khai sau được nghiệm thu khi năng lực
 
 **Luồng thay thế và ngoại lệ**
 
-- E01: Thiếu trường bắt buộc hoặc tài nguyên chưa an toàn: chặn.
+- E01: Thiếu trường bắt buộc, tài nguyên chưa an toàn hoặc phụ thuộc chéo site không được chia sẻ cho phạm vi dự kiến phát hành: chặn.
 - E02: Không có người duyệt hợp lệ: giữ bản nháp và báo cần phân công.
 
-**BR-WF-02:** Yêu cầu gắn với phiên bản nội dung, mô hình, tài nguyên, phạm vi và quy trình cụ thể. Baseline phải rút yêu cầu trước khi sửa bản đang duyệt.
+**BR-WF-02:** Yêu cầu gắn với phiên bản nội dung, mô hình, tài nguyên, phạm vi và quy trình cụ thể. Các phụ thuộc chéo site phải có quyền chia sẻ hợp lệ cho phạm vi dự kiến phát hành khi gửi duyệt; phát hành vẫn phải kiểm tra lại. Baseline phải rút yêu cầu trước khi sửa bản đang duyệt.
 **Kết quả thành công:** Có yêu cầu đang chờ duyệt cho đúng phiên bản, chưa xuất bản.
 **Bảo đảm khi thất bại:** Không ghi nhận hoàn tất khi chưa đạt kết quả; giữ dữ liệu đã xác nhận trước đó. Tác vụ nhiều bước phải chỉ rõ phần đã thay đổi và phần chưa thực hiện.
 

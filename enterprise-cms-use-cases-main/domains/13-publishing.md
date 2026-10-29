@@ -1,9 +1,11 @@
 # Xuất bản
 
 **Domain:** `PUB` · **Bắt đầu:** P2 · **Số use case:** 7
-**Trạng thái:** Baseline đề xuất v0.1 — chưa phải yêu cầu đã được khách hàng phê duyệt.
+**Trạng thái:** Baseline đề xuất v0.1; các quyết định về kênh tại OI-01 và phạm vi chia sẻ tại OI-02 đã được chốt.
 
 Quản lý phát hành, lịch, thu hồi và trạng thái phân phối. Không thay đổi bản nháp hoặc tự phê duyệt.
+**Quyết định OI-01:** Đích bắt buộc của phiên bản đầu là website công khai. Publishing làm việc qua định danh và hợp đồng đích phân phối để có thể bổ sung intranet hoặc Headless API sau này; các đích đó chưa thuộc phạm vi phát hành đầu.
+**Quyết định OI-02:** Khi bản phát hành dùng nội dung/tài nguyên từ site khác, quyền chia sẻ cho site đích phải được kiểm tra lại trước lúc chuyển bản. Gỡ hoặc thu hồi ở một site không tự làm thay đổi site khác.
 
 [Mục lục](../README.md) · [Thứ tự triển khai](../implementation-roadmap.md) · [Quy tắc chung](../common-rules.md) · [Trạng thái](../state-model.md) · [Điểm chưa chốt](../open-issues.md)
 
@@ -39,10 +41,10 @@ AC liên quan năng lực triển khai sau được nghiệm thu khi năng lực
 
 **Luồng thay thế và ngoại lệ**
 
-- E01: Thiếu duyệt, sai phạm vi, tài nguyên hết quyền hoặc tham chiếu không công khai được: chặn.
+- E01: Thiếu duyệt, sai phạm vi, quyền chia sẻ chéo site không còn hiệu lực, tài nguyên hết quyền hoặc tham chiếu không công khai được: chặn.
 - E02: Đích phân phối lỗi: giữ bản công khai trước đó khi chưa chuyển bản; hiển thị thất bại hoặc chưa hoàn tất.
 
-**BR-PUB-01:** Phê duyệt, nội dung và phụ thuộc phải khớp trước lúc chuyển bản. Lặp cùng yêu cầu không tạo phát hành trùng. Không báo thành công chỉ vì đã nhận yêu cầu.
+**BR-PUB-01:** Phê duyệt, nội dung và phụ thuộc phải khớp trước lúc chuyển bản; mọi chia sẻ chéo site phải còn hiệu lực cho site đích. Lặp cùng yêu cầu không tạo phát hành trùng. Không báo thành công chỉ vì đã nhận yêu cầu. Luồng phát hành tham chiếu đích bằng định danh/hợp đồng phân phối, không gọi trực tiếp logic dựng website từ lõi nghiệp vụ.
 **Kết quả thành công:** Đích đã chọn phục vụ đúng bản được duyệt; có hồ sơ phát hành.
 **Bảo đảm khi thất bại:** Không ghi nhận hoàn tất khi chưa đạt kết quả; giữ dữ liệu đã xác nhận trước đó. Tác vụ nhiều bước phải chỉ rõ phần đã thay đổi và phần chưa thực hiện.
 
@@ -146,7 +148,7 @@ AC liên quan năng lực triển khai sau được nghiệm thu khi năng lực
 - E01: Đích hoặc cache chưa cập nhật: giữ trạng thái đang gỡ hoặc lỗi.
 - E02: Còn lịch có thể phát hành lại: yêu cầu hủy hoặc xác nhận kế hoạch, không gỡ âm thầm rồi tự tái xuất bản.
 
-**BR-PUB-04:** Gỡ không xóa lịch sử. Phạm vi gỡ và tài nguyên dùng chung phải được phân biệt; không xóa tài nguyên còn được nội dung khác sử dụng.
+**BR-PUB-04:** Gỡ không xóa lịch sử. Phạm vi gỡ và nội dung/tài nguyên dùng chung phải được phân biệt; không xóa đối tượng nguồn còn được site hoặc nội dung khác sử dụng. Thu hồi chia sẻ chặn sử dụng mới nhưng không được làm hỏng bản đang công khai âm thầm.
 **Kết quả thành công:** Nội dung ngừng được phục vụ ở phạm vi đã chọn và kết quả được xác minh.
 **Bảo đảm khi thất bại:** Không ghi nhận hoàn tất khi chưa đạt kết quả; giữ dữ liệu đã xác nhận trước đó. Tác vụ nhiều bước phải chỉ rõ phần đã thay đổi và phần chưa thực hiện.
 
@@ -154,7 +156,7 @@ AC liên quan năng lực triển khai sau được nghiệm thu khi năng lực
 
 - **AC-PUB-04-01/v1:** Given chỉ gỡ site A; When hoàn tất; Then site B không tự bị gỡ.
 - **AC-PUB-04-02/v1:** Given cache vẫn phục vụ bản cũ ngoài giới hạn; When kiểm tra; Then chưa báo hoàn tất gỡ.
-- **AC-PUB-04-03/v1:** Given tài nguyên dùng chung cho bài khác; When gỡ bài này; Then bài khác không mất tài nguyên.
+- **AC-PUB-04-03/v1:** Given tài nguyên dùng chung cho bài hoặc site khác; When gỡ bài này; Then nơi dùng khác không mất tài nguyên.
 
 **Use case liên quan / phụ thuộc:** [UC-PUB-01](13-publishing.md#uc-pub-01), [UC-PUB-03](13-publishing.md#uc-pub-03), [UC-AST-04](08-assets.md#uc-ast-04).
 

@@ -1,9 +1,10 @@
 # Tài nguyên số
 
 **Domain:** `AST` · **Bắt đầu:** P1 · **Số use case:** 5
-**Trạng thái:** Baseline đề xuất v0.1 — chưa phải yêu cầu đã được khách hàng phê duyệt.
+**Trạng thái:** Baseline đề xuất v0.1; riêng quyết định chia sẻ tài nguyên chéo site tại OI-02 đã được chốt.
 
 Quản lý tệp, metadata, phiên bản và quyền sử dụng. Không tự công khai tài nguyên đang ở bản nháp.
+**Quyết định OI-02:** Tài nguyên được cô lập theo site mặc định và chỉ được site khác sử dụng khi có cấp quyền chia sẻ rõ ràng, còn hiệu lực và được audit.
 
 [Mục lục](../README.md) · [Thứ tự triển khai](../implementation-roadmap.md) · [Quy tắc chung](../common-rules.md) · [Trạng thái](../state-model.md) · [Điểm chưa chốt](../open-issues.md)
 
@@ -74,7 +75,7 @@ AC liên quan năng lực triển khai sau được nghiệm thu khi năng lực
 - E01: Thiếu thông tin bắt buộc: chưa cho sử dụng tại vị trí yêu cầu.
 - E02: Đổi phạm vi làm người khác mất quyền: cảnh báo và kiểm tra thẩm quyền.
 
-**BR-AST-02:** Thư mục không tự định nghĩa quyền nếu chưa có chính sách. Metadata làm thay đổi bản hiển thị phải được phiên bản hóa hoặc chụp theo bản phát hành.
+**BR-AST-02:** Thư mục không tự định nghĩa quyền nếu chưa có chính sách. Chia sẻ tài nguyên phải chỉ rõ site đích và quyền sử dụng; không tự cấp quyền sửa metadata, thay tệp hoặc đổi chủ sở hữu nguồn. Metadata làm thay đổi bản hiển thị phải được phiên bản hóa hoặc chụp theo bản phát hành.
 **Kết quả thành công:** Tài nguyên được tổ chức và có căn cứ sử dụng rõ ràng.
 **Bảo đảm khi thất bại:** Không ghi nhận hoàn tất khi chưa đạt kết quả; giữ dữ liệu đã xác nhận trước đó. Tác vụ nhiều bước phải chỉ rõ phần đã thay đổi và phần chưa thực hiện.
 
@@ -149,7 +150,7 @@ AC liên quan năng lực triển khai sau được nghiệm thu khi năng lực
 **Acceptance Criteria**
 
 - **AC-AST-04-01/v1:** Given tài nguyên được lịch hẹn tham chiếu; When kiểm tra; Then lịch được tính là phụ thuộc.
-- **AC-AST-04-02/v1:** Given có phụ thuộc ngoài quyền; When xem; Then thấy cảnh báo nhưng không thấy nội dung mật.
+- **AC-AST-04-02/v1:** Given tài nguyên có phụ thuộc tại site khác ngoài quyền quản lý; When xem hoặc thu hồi chia sẻ; Then thấy cảnh báo nhưng không thấy nội dung mật.
 - **AC-AST-04-03/v1:** Given chỉ mục tìm kiếm chưa cập nhật; When kiểm tra xóa; Then phụ thuộc thực tế vẫn chặn xóa.
 
 **Use case liên quan / phụ thuộc:** [UC-AST-01](08-assets.md#uc-ast-01), [UC-CNT-01](09-content.md#uc-cnt-01).

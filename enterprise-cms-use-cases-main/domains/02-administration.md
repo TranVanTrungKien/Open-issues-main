@@ -1,9 +1,11 @@
 # Quản trị và tích hợp
 
 **Domain:** `ADM` · **Bắt đầu:** P0 · **Số use case:** 6
-**Trạng thái:** Baseline đề xuất v0.1 — chưa phải yêu cầu đã được khách hàng phê duyệt.
+**Trạng thái:** Baseline đề xuất v0.1; phạm vi tổ chức tại OI-02 và giải pháp danh tính nền tảng tại OI-03 đã được chốt.
 
 Quản lý cấu hình, thông báo và kết nối. Không tự vượt quyền nghiệp vụ của các domain khác.
+**Quyết định OI-02:** Một workspace phục vụ một doanh nghiệp, nhiều đơn vị và nhiều site; không phải SaaS đa tenant. Dữ liệu được cô lập theo site mặc định và chỉ nội dung/tài nguyên được chia sẻ chéo site có kiểm soát.
+**Quyết định OI-03:** Cấu hình SSO/MFA, nguồn đồng bộ nhóm, chính sách phiên và quy trình tài khoản khẩn cấp là nền tảng P0; IAM quản lý ánh xạ vai trò/phạm vi và thu hồi quyền. Không hoãn các kết nối này đến UC-ADM-03 ở P4.
 
 [Mục lục](../README.md) · [Thứ tự triển khai](../implementation-roadmap.md) · [Quy tắc chung](../common-rules.md) · [Trạng thái](../state-model.md) · [Điểm chưa chốt](../open-issues.md)
 
@@ -33,7 +35,7 @@ AC liên quan năng lực triển khai sau được nghiệm thu khi năng lực
 
 1. Nhập thông tin không gian làm việc.
 2. Chọn múi giờ và quy ước thời gian.
-3. Kiểm tra cấu hình bắt buộc cùng kết nối danh tính.
+3. Kiểm tra cấu hình bắt buộc cùng SSO/MFA, nguồn đồng bộ nhóm, chính sách phiên và quy trình khôi phục quản trị khẩn cấp theo OI-03.
 4. Xác nhận để bắt đầu cấu hình site.
 
 **Luồng thay thế và ngoại lệ**
@@ -41,7 +43,7 @@ AC liên quan năng lực triển khai sau được nghiệm thu khi năng lực
 - E01: Thiếu cấu hình bắt buộc: chỉ lưu nháp, chưa cho vận hành.
 - E02: Đổi múi giờ sau khi có lịch: hiển thị ảnh hưởng trước khi xác nhận.
 
-**BR-ADM-01:** Baseline là một doanh nghiệp với nhiều đơn vị và site, không mặc định là SaaS đa tenant. Đổi múi giờ hiển thị không được đổi thời điểm tuyệt đối của lịch đã lập.
+**BR-ADM-01:** Workspace phục vụ một doanh nghiệp với nhiều đơn vị và site, không phải SaaS đa tenant. Tạo workspace, đơn vị hoặc site không tự mở quyền truy cập chéo; chia sẻ nội dung/tài nguyên tuân theo BR-COM-18. Cấu hình danh tính theo OI-03 và BR-COM-19 phải được xác nhận, kiểm chứng trước gate P0; không tự gán nhà cung cấp, thời hạn phiên hoặc cơ chế đồng bộ. Đổi múi giờ hiển thị không được đổi thời điểm tuyệt đối của lịch đã lập.
 **Kết quả thành công:** Workspace có cấu hình nền tảng và người chịu trách nhiệm.
 **Bảo đảm khi thất bại:** Không ghi nhận hoàn tất khi chưa đạt kết quả; giữ dữ liệu đã xác nhận trước đó. Tác vụ nhiều bước phải chỉ rõ phần đã thay đổi và phần chưa thực hiện.
 

@@ -1,9 +1,10 @@
 # Tìm kiếm
 
 **Domain:** `SRCH` · **Bắt đầu:** P1 · **Số use case:** 4
-**Trạng thái:** Baseline đề xuất v0.1 — chưa phải yêu cầu đã được khách hàng phê duyệt.
+**Trạng thái:** Baseline đề xuất v0.1; riêng ranh giới tìm kiếm dữ liệu chia sẻ chéo site tại OI-02 đã được chốt.
 
 Giúp người dùng tìm dữ liệu được phép thấy. Không trở thành nguồn quyết định quyền hoặc trạng thái xuất bản.
+**Quyết định OI-02:** Kết quả tìm kiếm mặc định chỉ gồm dữ liệu của site được cấp; nội dung/tài nguyên từ site khác chỉ xuất hiện khi được chia sẻ cho site đích và người dùng có quyền thực hiện hành động tương ứng.
 
 [Mục lục](../README.md) · [Thứ tự triển khai](../implementation-roadmap.md) · [Quy tắc chung](../common-rules.md) · [Trạng thái](../state-model.md) · [Điểm chưa chốt](../open-issues.md)
 
@@ -39,13 +40,13 @@ AC liên quan năng lực triển khai sau được nghiệm thu khi năng lực
 - E01: Không có kết quả: hiển thị rỗng và bộ lọc đang dùng.
 - E02: Nội dung đã đổi hoặc quyền vừa mất: kiểm tra lại khi mở.
 
-**BR-SRCH-01:** Tất cả kết quả, số lượng, gợi ý và bộ lọc chỉ phản ánh dữ liệu được phép thấy. P1 ưu tiên truy vấn cơ bản; chưa cần máy tìm kiếm riêng.
+**BR-SRCH-01:** Tất cả kết quả, số lượng, gợi ý và bộ lọc chỉ phản ánh dữ liệu được phép thấy, gồm dữ liệu chéo site chỉ khi có quyền chia sẻ phù hợp cho site đích. P1 ưu tiên truy vấn cơ bản; chưa cần máy tìm kiếm riêng.
 **Kết quả thành công:** Người dùng tìm đúng nội dung trong phạm vi được phép.
 **Bảo đảm khi thất bại:** Không ghi nhận hoàn tất khi chưa đạt kết quả; giữ dữ liệu đã xác nhận trước đó. Tác vụ nhiều bước phải chỉ rõ phần đã thay đổi và phần chưa thực hiện.
 
 **Acceptance Criteria**
 
-- **AC-SRCH-01-01/v1:** Given chỉ được site A; When tìm từ khóa có bài ở site B; Then danh sách và số lượng không lộ bài B.
+- **AC-SRCH-01-01/v1:** Given chỉ được site A và bài ở site B không được chia sẻ cho A; When tìm từ khóa; Then danh sách và số lượng không lộ bài B.
 - **AC-SRCH-01-02/v1:** Given mất quyền sau khi kết quả được tải; When mở bài; Then bị từ chối.
 - **AC-SRCH-01-03/v1:** Given đổi bộ lọc; When chuyển trang; Then các bộ lọc được giữ đúng.
 
@@ -73,7 +74,7 @@ AC liên quan năng lực triển khai sau được nghiệm thu khi năng lực
 - E01: Tài nguyên đang cách ly hoặc bị hạn chế: không cho sử dụng.
 - E02: Quyền sử dụng đã hết: nêu lý do không thể chọn.
 
-**BR-SRCH-02:** Thumbnail, tên tệp và số lượng cũng thuộc phạm vi kiểm soát quyền. Kết quả tìm không thay kiểm tra quyền khi gán.
+**BR-SRCH-02:** Thumbnail, tên tệp và số lượng cũng thuộc phạm vi kiểm soát quyền. Tài nguyên chéo site chỉ xuất hiện cho site đích được chia sẻ; kết quả tìm không thay kiểm tra quyền khi gán.
 **Kết quả thành công:** Tài nguyên được chọn có thể sử dụng trong phạm vi đích.
 **Bảo đảm khi thất bại:** Không ghi nhận hoàn tất khi chưa đạt kết quả; giữ dữ liệu đã xác nhận trước đó. Tác vụ nhiều bước phải chỉ rõ phần đã thay đổi và phần chưa thực hiện.
 

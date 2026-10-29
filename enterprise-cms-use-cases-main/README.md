@@ -6,9 +6,12 @@
 ## Phạm vi
 
 CMS quản lý nội dung cho một doanh nghiệp, nhiều đơn vị và nhiều site.
-Baseline có một locale và một đích đọc thực tế ở lần phát hành production đầu tiên.
-Đây không phải yêu cầu nội bộ đã được xác nhận hoặc cam kết một sản phẩm đã có đầy đủ tính năng.
-Chưa bao gồm SaaS đa tenant, thanh toán, CRM hoặc hệ thống hồ sơ pháp lý chuyên dụng.
+Theo OI-02, dữ liệu được cô lập theo site mặc định; nội dung và tài nguyên có thể được chia sẻ giữa các site bằng quyền rõ ràng, có phạm vi, có thể thu hồi và có audit.
+Phiên bản đầu tiên dùng một locale và **website công khai** làm kênh đọc chính, với một đích phân phối thực tế.
+Kiến trúc giữ lõi nội dung và quy trình độc lập với cơ chế phân phối để có thể mở rộng sang intranet và Headless API; hai năng lực này chưa thuộc phạm vi phát hành đầu.
+Theo [OI-03](open-issues.md#oi-03), giải pháp danh tính đã chốt gồm SSO doanh nghiệp + MFA + RBAC theo phạm vi + đồng bộ nhóm + quản lý phiên và thu hồi quyền + tài khoản khẩn cấp được kiểm soát; triển khai và kiểm chứng tại P0.
+Ngoài các quyết định tại OI-01, OI-02 và OI-03, các baseline còn lại chưa phải yêu cầu nội bộ đã được xác nhận hoặc cam kết một sản phẩm đã có đầy đủ tính năng.
+Chưa bao gồm SaaS đa tenant, thanh toán hoặc CRM. Theo OI-01, hiện chưa cần Records Management/Legal Records chuyên dụng vì dự án tập trung vào CMS quản lý và xuất bản nội dung.
 
 ## Cách đọc
 

@@ -7,7 +7,8 @@
 Căn cứ trực tiếp là danh sách domain Enterprise CMS và yêu cầu viết use case theo thứ tự triển khai trong cuộc trao đổi.
 Tìm kiếm tài liệu khả dụng chưa xác định được đặc tả nghiệp vụ CMS có thẩm quyền để chốt các quyết định chi tiết.
 Không dùng tài liệu giao diện hoặc nghiệp vụ của dự án khác để suy ra yêu cầu chính thức cho CMS này.
-Toàn bộ use case là baseline đề xuất v0.1, cần rà soát với chủ sản phẩm.
+Bộ use case là baseline đề xuất v0.1, cần rà soát với chủ sản phẩm; riêng các quyết định OI-01, OI-02 và OI-03 đã được xác nhận trong cuộc trao đổi và ghi tại [Open Issues](open-issues.md).
+Ngày 2026-10-28, người dùng xác nhận giải pháp OI-03: SSO doanh nghiệp + MFA + RBAC theo phạm vi + đồng bộ nhóm + quản lý phiên và thu hồi quyền + tài khoản khẩn cấp được kiểm soát. Đây là quyết định giải pháp, chưa phải bằng chứng triển khai hoặc xác nhận nhà cung cấp/cấu hình cụ thể.
 
 ## Cách dùng nguồn công khai
 

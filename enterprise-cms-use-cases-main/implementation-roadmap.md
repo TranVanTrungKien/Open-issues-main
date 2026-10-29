@@ -1,6 +1,6 @@
 # Thứ tự triển khai Enterprise CMS
 
-**Trạng thái:** Baseline đề xuất v0.1. **Phạm vi:** 13 domain, 66 use case, 202 AC riêng cho use case.
+**Trạng thái:** Baseline đề xuất v0.1; OI-01, OI-02 và OI-03 đã được chốt. **Phạm vi:** 13 domain, 66 use case, 202 AC riêng cho use case.
 [Mục lục](README.md) · [Quy tắc chung](common-rules.md) · [Trạng thái](state-model.md) · [Open Issues](open-issues.md)
 
 ## Cách đọc thứ tự
@@ -10,6 +10,9 @@ Triển khai theo lát cắt nghiệp vụ. Không cần làm toàn bộ một d
 Phần nền của Site/Localization/Governance/Administration xuất hiện sớm; năng lực nâng cao của cùng domain xuất hiện sau.
 Versioning đi cùng Content. Audit được ghi từ thay đổi đầu tiên. Tìm kiếm nội bộ cơ bản nằm ở P1.
 Tài liệu chưa gán ngày hoàn thành vì chưa có đội ngũ, nền tảng, số lượng dữ liệu và cam kết vận hành.
+Theo quyết định OI-01, website công khai là kênh chính của phiên bản đầu. P0 phải giữ ranh giới giữa lõi nội dung/quy trình và bộ phân phối; intranet và Headless API là mở rộng sau, không phải tiêu chí nghiệm thu của P0–P2.
+Theo quyết định OI-02, P0 thiết lập ranh giới cô lập mặc định theo site và mô hình cấp quyền chia sẻ có audit; P1 áp dụng mô hình đó cho nội dung/tài nguyên, P2 kiểm tra lại quyền chia sẻ khi duyệt và phát hành.
+Theo [quyết định OI-03](open-issues.md#oi-03), P0 phải triển khai SSO doanh nghiệp + MFA + RBAC theo phạm vi + đồng bộ nhóm + quản lý phiên và thu hồi quyền + tài khoản khẩn cấp được kiểm soát. Quyết định giải pháp đã chốt không đồng nghĩa hoàn tất triển khai; cấu hình cụ thể và bằng chứng kiểm chứng là điều kiện qua gate P0.
 
 | Giai đoạn | Số UC | Kết quả |
 |---|---:|---|
@@ -36,7 +39,8 @@ Tài liệu chưa gán ngày hoàn thành vì chưa có đội ngũ, nền tản
 | [UC-SITE-01](domains/04-site-delivery.md#uc-site-01) | Khởi tạo site và đích phân phối |
 | [UC-LOC-01](domains/05-localization.md#uc-loc-01) | Thiết lập ngôn ngữ và quy tắc dự phòng |
 
-**Completion Gate P0:** Đăng nhập được; người site A không đọc/sửa dữ liệu site B; quyền thu hồi không dùng tiếp; sự kiện nhạy cảm có audit.
+**Completion Gate P0:** Đăng nhập qua SSO và đáp ứng MFA; RBAC theo phạm vi chặn truy cập ngoài quyền; đồng bộ nhóm cập nhật đúng quyền và không tự mở rộng quyền khi lỗi; người site A không đọc/sửa dữ liệu site B nếu không có quyền rõ ràng; quyền chia sẻ nêu site nguồn, site đích và hành động; phiên hết hạn/đăng xuất/vô hiệu hóa không dùng lại được; quyền thu hồi bị chặn ở hành động tiếp theo, kể cả phiên đang mở; khôi phục quản trị bằng tài khoản khẩn cấp có kiểm soát khi SSO không khả dụng; sự kiện nhạy cảm có audit và sử dụng khẩn cấp có cảnh báo, rà soát.
+**Cấu hình phải xác nhận trước gate P0:** Nhà cung cấp/cấu hình SSO và MFA, thời hạn phiên, nguồn/cơ chế/tần suất đồng bộ, ánh xạ nhóm–vai trò–phạm vi và quy trình tài khoản khẩn cấp theo OI-03.
 **Điểm dừng:** Chưa đạt gate thì ghi rõ lỗi chặn, người xử lý và kiểm tra lại. Không tự thêm chức năng ngoài phạm vi để thay thế tiêu chí chưa đạt.
 
 ## P1 — Biên tập có phiên bản
@@ -61,7 +65,7 @@ Tài liệu chưa gán ngày hoàn thành vì chưa có đội ngũ, nền tản
 | [UC-SRCH-01](domains/11-search.md#uc-srch-01) | Tìm nội dung để biên tập hoặc xử lý |
 | [UC-SRCH-02](domains/11-search.md#uc-srch-02) | Tìm tài nguyên để tái sử dụng |
 
-**Completion Gate P1:** Tạo được một loại nội dung thực tế; gán tài nguyên hợp lệ; mở lại bản đã lưu; phát hiện lưu đồng thời; xem trước không lộ ra công khai.
+**Completion Gate P1:** Tạo được một loại nội dung thực tế; gán tài nguyên hợp lệ, gồm tài nguyên chéo site được chia sẻ rõ ràng; đối tượng không được chia sẻ vẫn bị cô lập; mở lại bản đã lưu; phát hiện lưu đồng thời; xem trước không lộ ra công khai.
 **Điểm dừng:** Chưa đạt gate thì ghi rõ lỗi chặn, người xử lý và kiểm tra lại. Không tự thêm chức năng ngoài phạm vi để thay thế tiêu chí chưa đạt.
 
 ## P2 — Phê duyệt và phát hành thực tế
@@ -88,7 +92,7 @@ Tài liệu chưa gán ngày hoàn thành vì chưa có đội ngũ, nền tản
 | [UC-PUB-04](domains/13-publishing.md#uc-pub-04) | Gỡ nội dung khỏi kênh phân phối |
 | [UC-PUB-07](domains/13-publishing.md#uc-pub-07) | Theo dõi và xử lý lần phát hành thất bại |
 
-**Completion Gate P2:** Đúng bản được duyệt đến được kênh đọc; lịch và hủy an toàn; gỡ được xác minh; thử lại không trùng; diễn tập phục hồi và kiểm thử bảo mật đạt.
+**Completion Gate P2:** Đúng bản được duyệt đến được website công khai; chia sẻ chéo site được kiểm tra lại trước phát hành; thu hồi chia sẻ chặn sử dụng mới mà không làm hỏng bản công khai âm thầm; lịch và hủy an toàn; gỡ được xác minh; thử lại không trùng; diễn tập phục hồi và kiểm thử bảo mật đạt.
 **Điểm dừng:** Chưa đạt gate thì ghi rõ lỗi chặn, người xử lý và kiểm tra lại. Không tự thêm chức năng ngoài phạm vi để thay thế tiêu chí chưa đạt.
 
 ## P3 — Mở rộng biên tập doanh nghiệp
@@ -125,6 +129,7 @@ Tài liệu chưa gán ngày hoàn thành vì chưa có đội ngũ, nền tản
 
 **Mục tiêu:** Kết nối hệ thống khác, di chuyển dữ liệu, phát hành nhiều đích và xử lý vòng đời lưu giữ.
 **Thứ tự trong giai đoạn:** ADM-03 → ADM-04; MDL/CNT đã ổn định → ADM-05/06; GOV-03 → GOV-04 → GOV-05; PUB-06 sau khi phát hành đơn đích ổn định.
+Headless API có thể được xác định phạm vi tại giai đoạn mở rộng này, nhưng không tự động được coi là đã nằm trong P4 nếu chưa có hợp đồng API, mô hình quyền và tiêu chí nghiệm thu được phê duyệt. Kênh intranet cũng cần một phạm vi triển khai riêng.
 
 | Use case | Mục tiêu |
 |---|---|
@@ -152,11 +157,14 @@ Con số này là phạm vi đề xuất, không phải một chuẩn bắt bu�
 | E2E-03 | Người tạo/sửa không tự duyệt, kể cả có vai trò duyệt | [UC-IAM-04](domains/01-identity-access.md#uc-iam-04), [UC-WF-03](domains/12-workflow.md#uc-wf-03) |
 | E2E-04 | Lịch gắn phiên bản, quyền mất hoặc duyệt bị thu hồi thì không chạy | [UC-PUB-02](domains/13-publishing.md#uc-pub-02), [UC-IAM-05](domains/01-identity-access.md#uc-iam-05), [UC-WF-07](domains/12-workflow.md#uc-wf-07) |
 | E2E-05 | Hủy cạnh tranh với thực thi có kết quả rõ; tác vụ cũ không hồi sinh bài đã gỡ | [UC-PUB-03](domains/13-publishing.md#uc-pub-03), [UC-PUB-04](domains/13-publishing.md#uc-pub-04), [UC-PUB-07](domains/13-publishing.md#uc-pub-07) |
-| E2E-06 | Người ngoài phạm vi không thấy bài, số lượng, thumbnail, preview, tài nguyên riêng | [UC-SRCH-01](domains/11-search.md#uc-srch-01), [UC-SRCH-02](domains/11-search.md#uc-srch-02), [UC-CNT-04](domains/09-content.md#uc-cnt-04) |
+| E2E-06 | Người ngoài phạm vi và không được chia sẻ không thấy bài, số lượng, thumbnail, preview, tài nguyên riêng | [UC-SRCH-01](domains/11-search.md#uc-srch-01), [UC-SRCH-02](domains/11-search.md#uc-srch-02), [UC-CNT-04](domains/09-content.md#uc-cnt-04) |
 | E2E-07 | Nội dung có tài nguyên đang cách ly không được phát hành | [UC-AST-01](domains/08-assets.md#uc-ast-01), [UC-WF-02](domains/12-workflow.md#uc-wf-02), [UC-PUB-01](domains/13-publishing.md#uc-pub-01) |
 | E2E-08 | Khôi phục thành nháp, lịch sử cũ còn nguyên, không tự công khai | [UC-VER-03](domains/10-versioning.md#uc-ver-03), [UC-PUB-01](domains/13-publishing.md#uc-pub-01) |
 | E2E-09 | Lỗi thông báo không làm mất công việc; lỗi đích không báo thành công giả | [UC-ADM-02](domains/02-administration.md#uc-adm-02), [UC-PUB-07](domains/13-publishing.md#uc-pub-07) |
 | E2E-10 | Audit giải thích được quyết định duyệt, phát hành và thu hồi | [UC-GOV-01](domains/03-governance.md#uc-gov-01), [UC-WF-07](domains/12-workflow.md#uc-wf-07) |
+| E2E-11 | Site đích dùng được nội dung/tài nguyên được chia sẻ nhưng không sửa nguồn; thu hồi chặn dùng mới và không phá bản đang công khai âm thầm | [UC-IAM-04](domains/01-identity-access.md#uc-iam-04), [UC-AST-04](domains/08-assets.md#uc-ast-04), [UC-CNT-01](domains/09-content.md#uc-cnt-01), [UC-PUB-01](domains/13-publishing.md#uc-pub-01) |
+| E2E-12 | Chưa đáp ứng MFA không mở phiên; nhóm đồng bộ chỉ cấp vai trò/phạm vi đã ánh xạ; gỡ nhóm hoặc thu hồi quyền chặn hành động tiếp theo bằng phiên cũ | [UC-IAM-01](domains/01-identity-access.md#uc-iam-01), [UC-IAM-03](domains/01-identity-access.md#uc-iam-03), [UC-IAM-04](domains/01-identity-access.md#uc-iam-04), [UC-IAM-05](domains/01-identity-access.md#uc-iam-05) |
+| E2E-13 | Phiên hết hạn/đăng xuất/vô hiệu hóa bị từ chối; khi SSO lỗi, tài khoản khẩn cấp khôi phục quản trị trong phạm vi/thời gian cho phép, có cảnh báo/audit/rà soát và không tự bỏ qua duyệt | [UC-IAM-01](domains/01-identity-access.md#uc-iam-01), [UC-IAM-02](domains/01-identity-access.md#uc-iam-02), [UC-GOV-01](domains/03-governance.md#uc-gov-01) |
 
 ## Điều kiện không được đẩy sang giai đoạn sau
 

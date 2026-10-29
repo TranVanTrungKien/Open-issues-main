@@ -1,9 +1,11 @@
 # Quản trị nội dung và kiểm toán
 
 **Domain:** `GOV` · **Bắt đầu:** P0 · **Số use case:** 5
-**Trạng thái:** Baseline đề xuất v0.1 — chưa phải yêu cầu đã được khách hàng phê duyệt.
+**Trạng thái:** Baseline đề xuất v0.1; yêu cầu audit chia sẻ chéo site tại OI-02 và kiểm soát danh tính tại OI-03 đã được chốt.
 
 Quản lý dấu vết, chủ sở hữu, lưu giữ và xóa có kiểm soát. Không thay thế lịch sử phiên bản.
+**Quyết định OI-02:** Cấp, thay đổi và thu hồi quyền chia sẻ nội dung/tài nguyên giữa các site là thao tác nhạy cảm phải có audit theo phạm vi.
+**Quyết định OI-03:** Ghi audit từ P0 cho xác thực, đồng bộ nhóm, thay đổi ánh xạ vai trò/phạm vi, thu hồi quyền, vô hiệu hóa phiên và sử dụng tài khoản khẩn cấp. Truy cập khẩn cấp phải có cảnh báo và rà soát sau sử dụng theo BR-COM-19.
 
 [Mục lục](../README.md) · [Thứ tự triển khai](../implementation-roadmap.md) · [Quy tắc chung](../common-rules.md) · [Trạng thái](../state-model.md) · [Điểm chưa chốt](../open-issues.md)
 
@@ -40,13 +42,13 @@ AC liên quan năng lực triển khai sau được nghiệm thu khi năng lực
 - E01: Không có quyền với phạm vi: không hiển thị sự kiện chi tiết.
 - E02: Thiếu hoặc gián đoạn ghi nhận: hiển thị cảnh báo, không trình bày như lịch sử đầy đủ.
 
-**BR-GOV-01:** Ghi audit từ P0 cho thao tác nhạy cảm; nội dung và xuất bản bổ sung khi được triển khai. Không sửa hoặc xóa sự kiện qua giao diện thông thường. Không ghi mật khẩu, token hoặc bí mật.
+**BR-GOV-01:** Ghi audit từ P0 cho thao tác nhạy cảm, bao gồm cấp, thay đổi và thu hồi chia sẻ chéo site; xác thực, đồng bộ nhóm, thay đổi ánh xạ quyền, thu hồi quyền và vô hiệu hóa phiên; nội dung và xuất bản bổ sung khi được triển khai. Sự kiện chia sẻ phải nêu đối tượng, site nguồn, site đích, hành động, người thực hiện và kết quả. Sử dụng tài khoản khẩn cấp phải truy vết được người sử dụng thực tế, lý do, phạm vi, thời gian và kết quả, có cảnh báo và rà soát sau sử dụng. Không sửa hoặc xóa sự kiện qua giao diện thông thường. Không ghi mật khẩu, token hoặc bí mật.
 **Kết quả thành công:** Người kiểm tra xác định được ai đã làm gì, khi nào, với phiên bản nào.
 **Bảo đảm khi thất bại:** Không ghi nhận hoàn tất khi chưa đạt kết quả; giữ dữ liệu đã xác nhận trước đó. Tác vụ nhiều bước phải chỉ rõ phần đã thay đổi và phần chưa thực hiện.
 
 **Acceptance Criteria**
 
-- **AC-GOV-01-01/v1:** Given một lần đổi quyền thành công; When tra cứu audit; Then có người thực hiện, đối tượng, thời điểm và kết quả.
+- **AC-GOV-01-01/v1:** Given một lần đổi quyền hoặc chia sẻ chéo site thành công; When tra cứu audit; Then có người thực hiện, đối tượng, phạm vi, thời điểm và kết quả.
 - **AC-GOV-01-02/v1:** Given tài khoản chỉ xem audit site A; When lọc site B; Then không đọc được sự kiện site B.
 - **AC-GOV-01-03/v1:** Given mở log đăng nhập hoặc tích hợp; When xem dữ liệu; Then không có mật khẩu hay token nguyên văn.
 
